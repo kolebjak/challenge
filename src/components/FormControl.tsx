@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useContext } from 'react'
+import { FormContext } from './Form'
 
 interface ITextControl {
+  name: string;
   label: string;
   type: 'text'
-  onChange: (value: string) => void;
-  value?: string;
-  errorMessage?: string;
 }
 
 interface IOption {
@@ -14,12 +13,10 @@ interface IOption {
 }
 
 interface ISelectControl {
+  name: string;
   label: string;
   type: 'select';
   options: IOption[];
-  onChange: (value: IOption['value']) => void;
-  value?: IOption['value'];
-  errorMessage?: string;
 }
 
 type Props = ISelectControl | ITextControl;
@@ -27,7 +24,11 @@ const isText = (props: Props): props is ITextControl => props.type === 'text';
 const isSelect = (props: Props): props is ISelectControl => props.type === 'select';
 
 const FormControl = (props: Props): JSX.Element => {
-  const { label, value, errorMessage } = props;
+  const form = useContext(FormContext);
+  const { label, name } = props;
+
+  const value = form?.getValue?.(name) || '';
+  const errorMessage = form?.getErrorMessage?.(name);
 
   return (
     <div className="formControl">
@@ -35,15 +36,15 @@ const FormControl = (props: Props): JSX.Element => {
       {isText(props) && (
         <input
           data-testid="formControl-input"
-          onChange={(e) => props.onChange(e.target.value)}
-          value={value || ''}
+          onChange={(e) => form?.onChange?.(name, e.target.value)}
+          value={value}
         />
       )}
       {isSelect(props) && (
         <select
           data-testid="formControl-select"
-          onChange={(c) => props.onChange(Number(c.target.value))}
-          value={value || ''}
+          onChange={(c) => form?.onChange?.(name, Number(c.target.value))}
+          value={value}
         >
           <option value="" disabled={true}>Select user</option>
           {props.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)};

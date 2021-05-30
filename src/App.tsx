@@ -10,6 +10,7 @@ interface IFormValues {
   userId: number;
   title: string;
   body: string;
+  [key: string]: string | number;
 }
 
 const App = (): JSX.Element => {
@@ -59,34 +60,24 @@ const App = (): JSX.Element => {
   return (
     <div className="App">
       {message && <div className="message">{message}</div>}
-      <Form onSubmit={handleSubmit} validation={handleValidation}>
-        {({ onChange, values, errorMessages }) => (
-          <>
-            <FormControl
-              type="select"
-              label="Users:"
-              options={options}
-              errorMessage={errorMessages['userId']}
-              onChange={onChange('userId')}
-              value={values['userId']}
-            />
-            <FormControl
-              type="text"
-              label="Title:"
-              errorMessage={errorMessages['title']}
-              onChange={onChange('title')}
-              value={values['title']}
-            />
-            <FormControl
-              type="text"
-              label="Body:"
-              errorMessage={errorMessages['body']}
-              onChange={onChange('body')}
-              value={values['body']}
-            />
-            <button disabled={isPosting} type="submit">Submit</button>
-          </>
-        )}
+      <Form<IFormValues> onSubmit={handleSubmit} validation={handleValidation}>
+        <FormControl
+          name="userId"
+          type="select"
+          label="Users:"
+          options={options}
+        />
+        <FormControl
+          name="title"
+          type="text"
+          label="Title:"
+        />
+        <FormControl
+          name="body"
+          type="text"
+          label="Body:"
+        />
+        <button disabled={isPosting} type="submit">Submit</button>
       </Form>
     </div>
   );
