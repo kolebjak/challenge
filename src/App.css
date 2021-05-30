@@ -1,0 +1,15 @@
+.errorMessage {
+  color: red;
+  font-size: small;
+}
+
+.formControl + .formControl, button {
+  margin-top: 1em;
+}
+
+.message {
+  margin: 1em;
+  background-color: #1890ff;
+  padding: 1em;
+  color: #fff;
+}
